@@ -14,11 +14,11 @@ const Dashboard = () => {
     const fetchDashboardData = async () => {
       try {
         const response = await adminService.getDashboardOverview();
-        console.log('Dashboard API Response:', response);
+        
         setDashboardData(response);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching dashboard data:', err);
+        
         setError('Failed to load dashboard data. Please try again.');
         setLoading(false);
       }

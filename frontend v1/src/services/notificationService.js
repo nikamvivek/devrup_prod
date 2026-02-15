@@ -6,7 +6,7 @@ export const notificationService = {
   async getNotifications() {
     try {
       const response = await axios.get('/api/notifications/');
-      console.log('Raw API response:', response);
+      
       
       // Handle different API response formats
       if (response.data !== undefined) {
@@ -20,13 +20,13 @@ export const notificationService = {
         }
         // If data is an object but not in the expected format
         else {
-          console.warn('Unexpected response format from notifications API:', response.data);
+          
           return [];
         }
       }
       return [];
     } catch (error) {
-      console.error('Error fetching notifications:', error);
+      
       return [];
     }
   },
@@ -34,30 +34,30 @@ export const notificationService = {
   // Mark specific notifications as read (optimistic UI update approach)
   async markAsRead(notificationIds) {
     // Log what we're trying to do
-    console.log('Attempting to mark notifications as read:', notificationIds);
+    
     
     try {
       // First try the action endpoint with hyphens
       const response = await axios.post('/api/notifications/mark-read/', {
         notification_ids: notificationIds
       });
-      console.log('Mark as read response:', response);
+      
       return response.data;
     } catch (error) {
-      console.error('Error with hyphen endpoint:', error);
+      
       
       try {
         // Then try with underscores if that fails
         const response = await axios.post('/api/notifications/mark_read/', {
           notification_ids: notificationIds
         });
-        console.log('Mark as read response (underscore):', response);
+        
         return response.data;
       } catch (error2) {
-        console.error('Error with underscore endpoint:', error2);
+        
         
         // Fall back to updating individual notifications
-        console.log('Falling back to individual updates');
+        
         return { message: 'Client-side mark as read (API update failed)' };
       }
     }
@@ -70,14 +70,14 @@ export const notificationService = {
       const response = await axios.post('/api/notifications/mark-read/', {});
       return response.data;
     } catch (error) {
-      console.error('Error with hyphen endpoint:', error);
+      
       
       try {
         // Then try with underscores if that fails
         const response = await axios.post('/api/notifications/mark_read/', {});
         return response.data;
       } catch (error2) {
-        console.error('Error with underscore endpoint:', error2);
+        
         
         // Return a client-side response
         return { message: 'Client-side mark all as read (API update failed)' };
@@ -92,7 +92,7 @@ export const notificationService = {
       const notificationsArray = Array.isArray(notificationsData) ? notificationsData : [];
       return notificationsArray.filter(n => !n.is_read).length;
     } catch (error) {
-      console.error('Error getting unread notifications count:', error);
+      
       return 0;
     }
   }

@@ -33,7 +33,7 @@ const adminService = {
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      console.error('Error fetching sales report:', error);
+      
       throw error;
     }
   },
@@ -55,7 +55,7 @@ const adminService = {
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      console.error('Error fetching category sales:', error);
+      
       throw error;
     }
   },
@@ -89,63 +89,11 @@ const adminService = {
       
       return true;
     } catch (error) {
-      console.error('Error exporting sales report:', error);
+      
       throw error;
     }
   },
   
-  // // Orders
-  // getAllOrders: async () => {
-  //   try {
-  //     const response = await axios.get('/api/orders/');
-  //     console.log('Raw orders response:', response.data);
-      
-  //     // If the response is directly an array, return it
-  //     if (Array.isArray(response.data)) {
-  //       return response.data;
-  //     }
-      
-  //     // If the response has a results property (pagination format)
-  //     if (response.data && response.data.results) {
-  //       // Process each order to include full user details
-  //       const orders = response.data.results;
-        
-  //       // For each order, fetch the user details if needed
-  //       const ordersWithUserDetails = await Promise.all(orders.map(async (order) => {
-  //         // If user is already an object with necessary details, just return the order
-  //         if (order.user && typeof order.user === 'object' && order.user.first_name) {
-  //           return order;
-  //         }
-          
-  //         // If user is just an ID, fetch user details
-  //         try {
-  //           // Check if we need to fetch user details (if it's just an ID string)
-  //           if (order.user && typeof order.user === 'string') {
-  //             const userResponse = await axios.get(`/api/users/${order.user}/`);
-  //             return {
-  //               ...order,
-  //               userDetails: userResponse.data // Add user details without overwriting the original user ID
-  //             };
-  //           }
-  //         } catch (err) {
-  //           console.error(`Error fetching details for user ${order.user}:`, err);
-  //         }
-          
-  //         return order;
-  //       }));
-        
-  //       return ordersWithUserDetails;
-  //     }
-      
-  //     // For any other structure, return the data as is
-  //     return response.data;
-  //   } catch (err) {
-  //     console.error('Error fetching orders:', err);
-  //     throw err;
-  //   }
-  // },
-  
-  // Orders
 getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
   try {
     // Construct query params
@@ -157,7 +105,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
     }
 
     const response = await axios.get(`/api/orders/?${params.toString()}`);
-    console.log('Raw orders response:', response.data);
+    
 
     let data = response.data;
 
@@ -187,7 +135,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
                 userDetails: userResponse.data,
               };
             } catch (err) {
-              console.error(`Error fetching user details for ${order.user}:`, err);
+              
               return order; // Return as-is on failure
             }
           }
@@ -208,7 +156,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
     // Default fallback
     return data;
   } catch (err) {
-    console.error('Error fetching orders:', err);
+    
     throw err;
   }
 },
@@ -221,7 +169,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
   },
   
   async updateOrderStatus(orderId, status, shippingDetails = null) {
-  console.log('updateOrderStatus called with:', orderId, status, shippingDetails);
+  
   
   const payload = {
     status,
@@ -232,7 +180,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
       expected_delivery_date: shippingDetails.expected_delivery_date
     }),
   };
-  console.log('Sending payload to backend:', payload);
+  
 
   const response = await axios.post(`/api/orders/${orderId}/update_status/`, payload);
   return response.data;
@@ -265,7 +213,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      console.error('Error fetching users:', error);
+      
       throw error;
     }
   },
@@ -275,7 +223,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
       const response = await axios.patch(`/api/users/${id}/toggle_status/`, {});
       return response.data;
     } catch (error) {
-      console.error('Error toggling user status:', error);
+      
       throw error;
     }
   },
@@ -285,7 +233,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
       const response = await axios.patch(`/api/users/${id}/change_role/`, { role });
       return response.data;
     } catch (error) {
-      console.error('Error changing user role:', error);
+      
       throw error;
     }
   },
@@ -346,7 +294,7 @@ getAllOrders: async (page = 1, pageSize = 10, status = 'all') => {
   },
   
 createCategory: async (categoryData) => {
-  console.log('Creating category with data:', categoryData);
+  
   const response = await axios.post('/api/categories/', categoryData, {
     headers: {
       'Content-Type': 'multipart/form-data'
@@ -372,7 +320,7 @@ createCategory: async (categoryData) => {
       const response = await api.get('api/coupons/');
       return response.data;
     } catch (error) {
-      console.error('Error fetching coupons:', error);
+      
       throw error;
     }
   },
@@ -382,7 +330,7 @@ createCategory: async (categoryData) => {
       const response = await api.get(`api/coupons/${id}/`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching coupon:', error);
+      
       throw error;
     }
   },
@@ -392,7 +340,7 @@ createCategory: async (categoryData) => {
       const response = await api.post('api/coupons/', couponData);
       return response.data;
     } catch (error) {
-      console.error('Error creating coupon:', error);
+      
       throw error;
     }
   },
@@ -402,7 +350,7 @@ createCategory: async (categoryData) => {
       const response = await api.put(`api/coupons/${id}/`, couponData);
       return response.data;
     } catch (error) {
-      console.error('Error updating coupon:', error);
+      
       throw error;
     }
   },
@@ -412,7 +360,7 @@ createCategory: async (categoryData) => {
       const response = await api.delete(`api/coupons/${id}/`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting coupon:', error);
+      
       throw error;
     }
   },
@@ -425,7 +373,7 @@ createCategory: async (categoryData) => {
       });
       return response.data;
     } catch (error) {
-      console.error('Error validating coupon:', error);
+      
       throw error;
     }
   }

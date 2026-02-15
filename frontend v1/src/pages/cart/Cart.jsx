@@ -1,5 +1,3 @@
-// src/pages/cart/Cart.jsx
-// Modern UI Cart component with gradients, animations and improved UX
 import React, { useState, useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, ChevronRight, Tag, X, ShoppingBag, CreditCard, Truck, ArrowRight, Minus, Plus, Lock, LogIn } from 'lucide-react';
@@ -52,9 +50,7 @@ const Cart = () => {
   // Debug cart items
   useEffect(() => {
     if (cartItems && cartItems.length > 0) {
-      console.log('Cart items:', cartItems);
-      console.log('First cart item structure:', JSON.stringify(cartItems[0], null, 2));
-    }
+                }
   }, [cartItems]);
 
   // Reset coupon form states when coupon changes

@@ -1,5 +1,3 @@
-// src/pages/profile/NewAddress.jsx
-import React from 'react';
 import AddressForm from './AddressForm';
 
 const NewAddress = () => {

@@ -29,7 +29,7 @@ const SalesReport = () => {
         setReportData(data);
         setError(null);
       } catch (err) {
-        console.error('Error fetching sales report:', err);
+        
         setError('Failed to load sales report. Please try again.');
       } finally {
         setLoading(false);

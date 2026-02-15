@@ -47,8 +47,7 @@ export const CartProvider = ({ children }) => {
         setCartItems(parsedCart);
       }
     } catch (error) {
-      console.error('Error loading local cart:', error);
-    }
+          }
   };
 
   // Save cart to browser storage
@@ -56,8 +55,7 @@ export const CartProvider = ({ children }) => {
     try {
       localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
     } catch (error) {
-      console.error('Error saving local cart:', error);
-    }
+          }
   };
 
   // Clear browser cart
@@ -65,8 +63,7 @@ export const CartProvider = ({ children }) => {
     try {
       localStorage.removeItem(LOCAL_CART_KEY);
     } catch (error) {
-      console.error('Error clearing local cart:', error);
-    }
+          }
   };
 
   // CRITICAL: Sync local cart with backend after login
@@ -82,16 +79,14 @@ export const CartProvider = ({ children }) => {
       const localCart = JSON.parse(localCartData);
       
       if (localCart.length > 0) {
-        console.log('Syncing local cart to backend:', localCart);
-        
+                
         // Add each item to backend cart
         const syncPromises = localCart.map(item => 
           cartService.addToCart({
             product_variant_id: item.product_variant_id,
             quantity: item.quantity
           }).catch(err => {
-            console.error('Failed to sync item:', item, err);
-            return null;
+                        return null;
           })
         );
         
@@ -100,14 +95,12 @@ export const CartProvider = ({ children }) => {
         // Clear local cart after successful sync
         clearLocalCart();
         
-        console.log('Local cart synced successfully');
-      }
+              }
       
       // Fetch the updated cart from backend
       await fetchCart();
     } catch (error) {
-      console.error('Error syncing local cart:', error);
-      setError('Failed to sync your cart. Some items may not have been added.');
+            setError('Failed to sync your cart. Some items may not have been added.');
     } finally {
       setSyncInProgress(false);
       setLoading(false);
@@ -150,8 +143,7 @@ export const CartProvider = ({ children }) => {
         setCartItems([]);
       }
     } catch (err) {
-      console.error('Failed to fetch cart:', err);
-      setError('Failed to load your cart. Please try again later.');
+            setError('Failed to load your cart. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -252,8 +244,7 @@ export const CartProvider = ({ children }) => {
       
       return true;
     } catch (err) {
-      console.error('Failed to add to cart:', err);
-      setError('Failed to add item to cart. Please try again.');
+            setError('Failed to add item to cart. Please try again.');
       return false;
     } finally {
       setLoading(false);
@@ -286,8 +277,7 @@ export const CartProvider = ({ children }) => {
       
       return true;
     } catch (err) {
-      console.error('Failed to update cart item:', err);
-      setError('Failed to update item. Please try again.');
+            setError('Failed to update item. Please try again.');
       if (isAuthenticated) {
         await fetchCart();
       }
@@ -315,8 +305,7 @@ export const CartProvider = ({ children }) => {
       
       return true;
     } catch (err) {
-      console.error('Failed to remove cart item:', err);
-      setError('Failed to remove item. Please try again.');
+            setError('Failed to remove item. Please try again.');
       if (isAuthenticated) {
         await fetchCart();
       }
@@ -349,8 +338,7 @@ export const CartProvider = ({ children }) => {
       
       return true;
     } catch (err) {
-      console.error('Failed to apply coupon:', err);
-      setCoupon(null);
+            setCoupon(null);
       setDiscount(0);
       setFinalTotal(cartTotal);
       

@@ -7,7 +7,7 @@ export const homeService = {
       const response = await api.get('/api/homepage/');
       return response.data;
     } catch (error) {
-      console.error('Error fetching homepage data:', error);
+      
       throw error;
     }
   },

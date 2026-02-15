@@ -30,8 +30,7 @@ const SalesReportExport = ({ period, startDate, endDate }) => {
       const data = await adminService.getSalesReport(params);
       return data;
     } catch (err) {
-      console.error('Error fetching sales data for export:', err);
-      setError('Failed to fetch data for export');
+            setError('Failed to fetch data for export');
       throw err;
     } finally {
       setLoading(false);
@@ -78,8 +77,7 @@ const SalesReportExport = ({ period, startDate, endDate }) => {
       saveAs(blob, generateFileName('csv'));
       
     } catch (err) {
-      console.error('Error exporting to CSV:', err);
-      setError('Failed to generate CSV file');
+            setError('Failed to generate CSV file');
     }
   };
 
@@ -136,8 +134,7 @@ const SalesReportExport = ({ period, startDate, endDate }) => {
       XLSX.writeFile(wb, generateFileName('xlsx'));
       
     } catch (err) {
-      console.error('Error exporting to Excel:', err);
-      setError('Failed to generate Excel file');
+            setError('Failed to generate Excel file');
     }
   };
 
@@ -211,8 +208,7 @@ const SalesReportExport = ({ period, startDate, endDate }) => {
       doc.save(generateFileName('pdf'));
       
     } catch (err) {
-      console.error('Error exporting to PDF:', err);
-      setError('Failed to generate PDF file');
+            setError('Failed to generate PDF file');
     }
   };
 

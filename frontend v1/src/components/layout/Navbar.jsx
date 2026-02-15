@@ -17,7 +17,6 @@ import {
   ShoppingBag, 
   Home, 
   Grid, 
-  Store
 } from 'lucide-react';
 import { notificationService } from '../../services/notificationService';
 import { productService } from '../../services/productService';
@@ -68,12 +67,10 @@ const Navbar = () => {
         } else if (categoriesData && categoriesData.results && Array.isArray(categoriesData.results)) {
           setCategories(categoriesData.results.filter(cat => cat.is_active));
         } else {
-          console.error('Unexpected categories data format:', categoriesData);
-          setCategories([]);
+                    setCategories([]);
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
-        setCategories([]);
+                setCategories([]);
       }
     };
     fetchCategories();
@@ -100,12 +97,10 @@ const Navbar = () => {
             const unreadCount = response.results.filter(n => !n.is_read).length;
             setUnreadNotifications(unreadCount);
           } else {
-            console.log('Unexpected notification response format:', response);
-            setUnreadNotifications(0);
+                        setUnreadNotifications(0);
           }
         } catch (error) {
-          console.error('Error fetching notifications count:', error);
-          setUnreadNotifications(0);
+                    setUnreadNotifications(0);
         }
       };
       

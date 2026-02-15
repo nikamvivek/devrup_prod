@@ -213,9 +213,6 @@ const CategoryManagement = () => {
   const fetchCategories = async () => {
     try {
       const data = await adminService.getAllCategories();
-      console.log('Raw categories response:', data);
-      console.log('Categories data type:', typeof data);
-      console.log('Is array?', Array.isArray(data));
       setDebugModal(prev => ({ ...prev, apiData: data }));
 
       if (Array.isArray(data)) {
@@ -223,13 +220,11 @@ const CategoryManagement = () => {
       } else if (data && data.results && Array.isArray(data.results)) {
         setCategories(data.results);
       } else {
-        console.error('Unexpected API response format:', data);
         setToast({ message: 'Received data in an unexpected format.', type: 'error' });
         setCategories([]);
       }
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching categories:', err);
       setToast({ message: 'Failed to load categories. Please try again.', type: 'error' });
       setLoading(false);
       setCategories([]);
@@ -259,7 +254,6 @@ const CategoryManagement = () => {
       if (formData.image) {
         payload.append('image', formData.image);
       }
-      console.log('Submitting new category with payload:', payload);
       if (editingId) {
         response = await adminService.updateCategory(editingId, payload);
         setCategories(categories.map(category => 
@@ -274,7 +268,6 @@ const CategoryManagement = () => {
 
       resetForm();
     } catch (err) {
-      console.error('Error saving category:', err);
       setToast({ message: 'Failed to save category. Please try again.', type: 'error' });
     }
   };
@@ -314,7 +307,6 @@ const CategoryManagement = () => {
       setToast({ message: 'Category deleted successfully', type: 'success' });
       closeDeleteModal();
     } catch (err) {
-      console.error('Error deleting category:', err);
       setToast({ message: 'Failed to delete category. Please try again.', type: 'error' });
       closeDeleteModal();
     }
@@ -334,10 +326,8 @@ const CategoryManagement = () => {
 
   const toggleCategoryStatus = async (id, currentStatus) => {
     try {
-      console.log(`Toggling category ${id} status from ${currentStatus} to ${!currentStatus}`);
       const category = categories.find(c => c.id === id);
       if (!category) {
-        console.error('Category not found in local state');
         return;
       }
       const updateData = new FormData();
@@ -353,7 +343,6 @@ const CategoryManagement = () => {
       setCategories(categories.map(cat => cat.id === id ? response : cat));
       setToast({ message: `Category ${!currentStatus ? 'activated' : 'deactivated'} successfully`, type: 'success' });
     } catch (err) {
-      console.error('Error updating category status:', err);
       setToast({ message: 'Failed to update category status. Please try again.', type: 'error' });
     }
   };

@@ -29,8 +29,7 @@ const CategorySalesChart = ({ startDate, endDate }) => {
         
         setCategoryData(formattedData);
       } catch (err) {
-        console.error('Error fetching category sales:', err);
-        setError('Failed to load category data');
+                setError('Failed to load category data');
       } finally {
         setLoading(false);
       }

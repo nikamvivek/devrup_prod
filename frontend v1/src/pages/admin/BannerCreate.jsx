@@ -170,7 +170,6 @@ const BannerCreate = () => {
       }, 1500);
       
     } catch (err) {
-      console.error('Error creating banner:', err);
       setToast({
         message: err.response?.data?.message || 'Failed to create banner. Please try again.',
         type: 'error'

@@ -18,7 +18,7 @@ const OrderSuccess = () => {
         const orderData = await orderService.getOrder(id);
         setOrder(orderData);
       } catch (err) {
-        console.error('Error fetching order details:', err);
+        
         setError('Failed to load order details. Please check your order history.');
       } finally {
         setLoading(false);

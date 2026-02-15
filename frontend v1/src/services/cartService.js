@@ -6,7 +6,7 @@ export const cartService = {
   async getCart() {
     try {
       const response = await axios.get('/api/cart/');
-      console.log('Raw cart response:', response.data);
+      
       
       // Normalize response data if needed
       const cartData = response.data;
@@ -29,7 +29,7 @@ export const cartService = {
               }
             }
           } catch (error) {
-            console.warn('Unable to fetch product details for variant:', error);
+            
           }
           
           // Convert price values to numbers if needed
@@ -51,7 +51,7 @@ export const cartService = {
       
       return cartData;
     } catch (error) {
-      console.error('Error fetching cart:', error.response || error);
+      
       throw error;
     }
   },
@@ -62,7 +62,7 @@ export const cartService = {
       const response = await axios.get(`/api/products/variant/${variantId}/`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching variant details:', error);
+      
       return null;
     }
   },
@@ -73,14 +73,14 @@ export const cartService = {
       const response = await axios.get(`/api/products/${productId}/`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching product details:', error);
+      
       return null;
     }
   },
 
   // Add item to cart
   async addToCart(itemData) {
-    console.log('Cart service: Adding to cart with data:', itemData);
+    
     
     // Handle different data structures based on whether we have a variant ID or product ID
     const requestData = itemData.product_variant_id
@@ -104,15 +104,15 @@ export const cartService = {
           response = await axios.post('/api/cart/add-product/', requestData);
         } catch (variantError) {
           // If that fails, try the regular endpoint anyway as a fallback
-          console.warn('Failed to add product directly, trying standard endpoint:', variantError);
+          
           response = await axios.post('/api/cart/add/', requestData);
         }
       }
       
-      console.log('Cart service: Successfully added to cart, response:', response.data);
+      
       return response.data;
     } catch (error) {
-      console.error('Cart service: Error adding to cart:', error.response || error);
+      
       throw error;
     }
   },
@@ -123,7 +123,7 @@ export const cartService = {
       const response = await axios.put(`/api/cart/update/${itemId}/`, { quantity });
       return response.data;
     } catch (error) {
-      console.error('Error updating cart item:', error.response || error);
+      
       throw error;
     }
   },
@@ -134,7 +134,7 @@ export const cartService = {
       const response = await axios.delete(`/api/cart/remove/${itemId}/`);
       return response.data;
     } catch (error) {
-      console.error('Error removing from cart:', error.response || error);
+      
       throw error;
     }
   },
@@ -172,7 +172,7 @@ async applyCoupon(code, cartTotal) {
       }
     );
     
-    console.log('Coupon application response:', response.data);
+    
     
     // Normalize response data
     const responseData = response.data;
@@ -188,7 +188,7 @@ async applyCoupon(code, cartTotal) {
     
     return responseData;
   } catch (error) {
-    console.error('Error applying coupon:', error.response?.data || error.message || error);
+    
     
     // Improved error handling to extract validation messages
     if (error.response) {
@@ -257,7 +257,7 @@ async applyCoupon(code, cartTotal) {
       }
     } else if (error.request) {
       // The request was made but no response was received
-      console.error('No response received from server:', error.request);
+      
       throw new Error('No response received from server. Please check your network connection.');
     }
     

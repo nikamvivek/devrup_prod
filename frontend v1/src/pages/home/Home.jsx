@@ -36,7 +36,7 @@ const Home = () => {
         const data = await homeService.getHomePageData();
         setHomeData(data);
       } catch (error) {
-        console.error('Error fetching home data:', error);
+        
         setError('Failed to load homepage content. Please try again later.');
       } finally {
         setLoading(false);

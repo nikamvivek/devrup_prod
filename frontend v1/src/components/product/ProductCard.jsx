@@ -155,8 +155,7 @@ const ProductCard = ({ product }) => {
         setShowAddedPopup(false);
       }, 3000);
     } catch (err) {
-      console.error('Error adding to cart:', err);
-    }
+          }
   };
 
   const toggleWishlist = async (e) => {
@@ -172,8 +171,7 @@ const ProductCard = ({ product }) => {
         await addToWishlist(product.id);
       }
     } catch (error) {
-      console.error('Error toggling wishlist:', error);
-    }
+          }
     
     setTimeout(() => {
       setAnimateHeart(false);

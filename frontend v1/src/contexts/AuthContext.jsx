@@ -51,13 +51,11 @@ export const AuthProvider = ({ children }) => {
               setError(null);
               setRequiresActivation(false);
             } catch (refreshErr) {
-              console.error('Error refreshing token:', refreshErr);
-              logout();
+                            logout();
               setError('Session expired. Please log in again.');
             }
           } else {
-            console.error('Error loading user:', err);
-            logout();
+                        logout();
             setError('Error loading user profile.');
           }
         } finally {
@@ -171,8 +169,7 @@ export const AuthProvider = ({ children }) => {
         await authService.logout(refreshToken);
       }
     } catch (err) {
-      console.error('Error during logout:', err);
-    } finally {
+          } finally {
       setUser(null);
       setToken(null);
       setRefreshToken(null);
@@ -257,8 +254,7 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('refreshToken', newTokens.refresh);
           return newTokens.access;
         } catch (refreshErr) {
-          console.error('Error refreshing token:', refreshErr);
-          logout();
+                    logout();
           return null;
         }
       } else {

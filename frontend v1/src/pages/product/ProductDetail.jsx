@@ -64,9 +64,9 @@ const ProductDetail = () => {
         setContentVisible(false);
 
         // Fetch product data
-        console.log('Fetching product with slug:', slug);
+        
         const productData = await productService.getProductBySlug(slug);
-        console.log('Product data received:', productData);
+        
         setProduct(productData);
 
         if (productData.variants && productData.variants.length > 0) {
@@ -76,13 +76,13 @@ const ProductDetail = () => {
           // If no variants in product data, try to fetch them separately
           try {
             const variantsData = await productService.getProductVariants(slug);
-            console.log('Variants fetched separately:', variantsData);
+            
             if (variantsData && variantsData.length > 0) {
               setVariants(variantsData);
               setSelectedVariant(variantsData[0]);
             }
           } catch (variantErr) {
-            console.warn('Could not fetch product variants:', variantErr);
+            
           }
         }
 
@@ -91,7 +91,7 @@ const ProductDetail = () => {
           const reviewsData = await productService.getProductReviews(slug);
           setReviews(reviewsData);
         } catch (reviewErr) {
-          console.warn('Could not fetch reviews:', reviewErr);
+          
           setReviews([]);
         }
 
@@ -104,7 +104,7 @@ const ProductDetail = () => {
               relatedData.results.filter((p) => p.id !== productData.id)
             );
           } catch (relatedErr) {
-            console.warn('Could not fetch related products:', relatedErr);
+            
             setRelatedProducts([]);
           }
         }
@@ -114,7 +114,7 @@ const ProductDetail = () => {
           setContentVisible(true);
         }, 300);
       } catch (err) {
-        console.error('Error fetching product details:', err);
+        
         setError(`Failed to load product details: ${err.response?.data?.detail || 'Please try again later.'}`);
       } finally {
         setLoading(false);
@@ -166,7 +166,7 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!selectedVariant) {
-      console.error('No variant selected');
+      
       return;
     }
 
@@ -189,7 +189,7 @@ const ProductDetail = () => {
         setAddedToCart(false);
       }, 3000);
     } catch (err) {
-      console.error('Error adding to cart:', err);
+      
     }
   };
 
@@ -206,7 +206,7 @@ const ProductDetail = () => {
         await addToWishlist(product.id);
       }
     } catch (err) {
-      console.error('Error toggling wishlist:', err);
+      
     }
   };
 

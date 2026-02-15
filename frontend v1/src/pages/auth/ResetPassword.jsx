@@ -82,7 +82,7 @@ const ResetPassword = () => {
       }, 3000);
       
     } catch (error) {
-      console.error('Password reset error:', error);
+      
       
       // Handle specific errors
       if (error.response?.data?.error) {

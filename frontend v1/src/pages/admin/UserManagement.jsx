@@ -44,14 +44,14 @@ const UserManagement = () => {
         setTotalPages(1);
       } else {
         // Handle unexpected response format
-        console.error('Unexpected API response format:', responseData);
+        
         setError('Received unexpected data format from the server');
         setUsers([]);
         setTotalUsers(0);
         setTotalPages(1);
       }
     } catch (err) {
-      console.error('Error fetching users:', err);
+      
       setError(`Failed to load users: ${err.message || 'Unknown error'}`);
       setUsers([]);
       setTotalUsers(0);
@@ -96,7 +96,7 @@ const UserManagement = () => {
         user.id === userId ? { ...user, is_active: !isActive } : user
       ));
     } catch (err) {
-      console.error('Error updating user status:', err);
+      
       setError(`Failed to update user status: ${err.message || 'Unknown error'}`);
     }
   };
@@ -119,8 +119,7 @@ const UserManagement = () => {
         user.id === userId ? { ...user, ...roleUpdates } : user
       ));
     } catch (err) {
-      console.error('Error updating user role:', err);
-      setError(`Failed to update user role: ${err.message || 'Unknown error'}`);
+            setError(`Failed to update user role: ${err.message || 'Unknown error'}`);
     }
   };
 

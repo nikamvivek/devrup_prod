@@ -88,7 +88,6 @@ const BannerEdit = () => {
       
       setFetchLoading(false);
     } catch (err) {
-      console.error('Error fetching banner:', err);
       setToast({
         message: 'Failed to load banner details. Please try again.',
         type: 'error'
@@ -212,7 +211,6 @@ const BannerEdit = () => {
       }, 1500);
       
     } catch (err) {
-      console.error('Error updating banner:', err);
       setToast({
         message: err.response?.data?.message || 'Failed to update banner. Please try again.',
         type: 'error'

@@ -47,7 +47,7 @@ const ProductReviews = () => {
         const productData = await productService.getProductBySlug(slug);
         setProduct(productData);
       } catch (err) {
-        console.error('Error fetching product:', err);
+        
         setError('Failed to load product details. Please try again.');
       } finally {
         setLoading(false);
@@ -87,7 +87,7 @@ const ProductReviews = () => {
       }, 3000);
 
     } catch (err) {
-      console.error('Error submitting review:', err);
+      
       if (err.response?.status === 400 && err.response?.data?.error === 'You have already reviewed this product') {
         setError('You have already reviewed this product. You can only submit one review per product.');
       } else {

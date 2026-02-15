@@ -72,7 +72,7 @@ const Checkout = () => {
           setSelectedAddressId(addressesData[0].id);
         }
       } catch (err) {
-        console.error('Error fetching addresses:', err);
+        
         setAddresses([]);  // Ensure addresses is always an array
       } finally {
         setLoadingAddresses(false);
@@ -165,7 +165,7 @@ const Checkout = () => {
       setOrderSummary(orderSummary);
       
     } catch (err) {
-      console.error('Error placing order:', err);
+      
       setOrderError(err.response?.data?.error || 'Failed to place your order. Please try again.');
     } finally {
       setPlacingOrder(false);

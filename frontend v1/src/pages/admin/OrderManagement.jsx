@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/layout/AdminLayout';
 import adminService from '../../services/adminService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ScaleLoader } from 'react-spinners';
-
-
-
 
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
@@ -59,7 +56,7 @@ const OrderManagement = () => {
       }
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching orders:', err);
+      
       setError('Failed to load orders. Please try again.');
       setLoading(false);
     }
@@ -127,7 +124,7 @@ const OrderManagement = () => {
         ));
         toast.success('Order status updated successfully!');
       } catch (err) {
-        console.error('Error updating order status:', err);
+        
         toast.error('Failed to update order status. Please try again.');
       } finally {
         setUpdatingStatusId(null); // ✅ Stop loader
@@ -179,7 +176,7 @@ const OrderManagement = () => {
       setFormTouched(false);
       toast.success('Order shipped successfully!');
     } catch (err) {
-      console.error('Error updating shipping details:', err);
+      
       if (err.response && err.response.data) {
         const backendErrors = err.response.data;
         if (backendErrors.details) {

@@ -2,19 +2,6 @@
   import axios from '../services/api';
 
   export const orderService = {
-    // Get all orders
-    // async getOrders() {
-    //   try {
-    //     const response = await axios.get('/api/orders/');
-    //     // Return the data array directly - make sure we're returning an array
-    //     return Array.isArray(response.data) ? response.data : 
-    //           (response.data.results || response.data.data || []);
-    //   } catch (error) {
-    //     console.error('Error fetching orders:', error);
-    //     throw error;
-    //   }
-    // },
-
 
     async getOrders() {
   try {
@@ -31,7 +18,7 @@
     
     return allOrders;
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    
     throw error;
   }
 },
@@ -41,7 +28,7 @@
         const response = await axios.get(`/api/orders/${orderId}/`);
         return response.data;
       } catch (error) {
-        console.error(`Error fetching order ${orderId}:`, error);
+        
         throw error;
       }
     },
@@ -57,7 +44,7 @@
       });
       return response.data;
     } catch (error) {
-      console.error('COD Order Error:', error.response?.data || error);
+      
       throw error;
     }
   },
@@ -72,7 +59,7 @@
       });
       return response.data;
     } catch (error) {
-      console.error('Online Payment Initiation Error:', error.response?.data || error);
+      
       throw error;
     }
   },
@@ -85,22 +72,10 @@
       });
       return response.data;
     } catch (error) {
-      console.error('Payment Status Check Error:', error.response?.data || error);
+      
       throw error;
     }
   },
-
-
-    // // Update order status (admin only)
-    // async updateOrderStatus(orderId, status) {
-    //   try {
-    //     const response = await axios.post(`/api/orders/${orderId}/update-status/`, { status });
-    //     return response.data;
-    //   } catch (error) {
-    //     console.error(`Error updating status for order ${orderId}:`, error);
-    //     throw error;
-    //   }
-    // },
 
     async updateOrderStatus(orderId, status, shippingDetails = null) {
       try {
@@ -115,19 +90,15 @@
           })
         };
         
-        console.log('Sending payload to backend:', payload); // Debug log
+         // Debug log
         
         // FIX: Change update_status to update-status (with hyphen)
         const response = await axios.post(`/api/orders/${orderId}/update-status/`, payload);
         return response.data;
       } catch (error) {
-        console.error(`Error updating status for order ${orderId}:`, error);
         
-        // Log additional error details for debugging
-        if (error.response) {
-          console.error('Response error data:', error.response.data);
-          console.error('Response status:', error.response.status);
-        }
+        
+       
         
       throw error;
     }
@@ -140,7 +111,7 @@
         const response = await axios.post('/api/payments/confirm/', paymentData);
         return response.data;
       } catch (error) {
-        console.error('Error processing payment:', error);
+        
         throw error;
       }
     }

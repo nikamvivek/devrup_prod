@@ -21,8 +21,7 @@ export const WishlistProvider = ({ children }) => {
       setWishlistItems(data || []);
       setError(null);
     } catch (err) {
-      console.error('Error fetching wishlist:', err);
-      setError('Failed to load your wishlist. Please try again.');
+            setError('Failed to load your wishlist. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,8 +50,7 @@ export const WishlistProvider = ({ children }) => {
       await fetchWishlist(); // Refresh wishlist after adding item
       setError(null);
     } catch (err) {
-      console.error('Error adding to wishlist:', err);
-      setError('Failed to add item to wishlist. Please try again.');
+            setError('Failed to add item to wishlist. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -67,8 +65,7 @@ export const WishlistProvider = ({ children }) => {
       setWishlistItems(wishlistItems.filter(item => item.product.id !== productId));
       setError(null);
     } catch (err) {
-      console.error('Error removing from wishlist:', err);
-      setError('Failed to remove item from wishlist. Please try again.');
+            setError('Failed to remove item from wishlist. Please try again.');
     } finally {
       setLoading(false);
     }

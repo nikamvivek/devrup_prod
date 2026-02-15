@@ -85,7 +85,7 @@ export const authService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Token validation error:', error);
+      
       throw error;
     }
   },
@@ -101,7 +101,7 @@ export const authService = {
       }
       return [];
     } catch (error) {
-      console.error('Error fetching addresses:', error);
+      
       return [];
     }
   },
@@ -112,7 +112,7 @@ export const authService = {
       const response = await axios.post('/api/address/', addressData);
       return response.data;
     } catch (error) {
-      console.error('Error adding address:', error);
+      
       throw error;
     }
   },
@@ -123,7 +123,7 @@ export const authService = {
       const response = await axios.put(`/api/address/${addressId}/`, addressData);
       return response.data;
     } catch (error) {
-      console.error('Error updating address:', error);
+      
       throw error;
     }
   },
@@ -134,7 +134,7 @@ export const authService = {
       const response = await axios.delete(`/api/address/${addressId}/`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting address:', error);
+      
       throw error;
     }
   }

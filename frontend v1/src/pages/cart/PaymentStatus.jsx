@@ -29,7 +29,7 @@ const PaymentStatus = () => {
         const parsedSummary = JSON.parse(savedSummary);
         setOrderSummary(parsedSummary);
       } catch (e) {
-        console.error('Failed to parse order summary:', e);
+        
       }
     }
     
@@ -83,7 +83,7 @@ const PaymentStatus = () => {
         setError(response.error || 'Failed to verify payment status');
       }
     } catch (err) {
-      console.error('Error checking payment status:', err);
+      
       setStatus('failed');
       setError('Failed to verify payment. Please contact support if amount was deducted.');
     }

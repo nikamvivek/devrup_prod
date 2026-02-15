@@ -200,7 +200,6 @@ const handleStatusUpdate = async () => {
       await generateReceipt(order);
       toast.success('Receipt downloaded successfully!');
     } catch (error) {
-      // console.error('Error generating receipt:', error);
       toast.error('Failed to generate receipt. Please try again.');
     }
   };

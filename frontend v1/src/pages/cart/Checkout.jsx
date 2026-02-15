@@ -195,7 +195,6 @@ const Checkout = () => {
       }
       
     } catch (err) {
-      // console.error('Error placing order:', err);
       setOrderError(err.response?.data?.error || 'Failed to place your order. Please try again.');
       setPlacingOrder(false);
     }
@@ -295,24 +294,6 @@ const Checkout = () => {
                   )}
                 </div>
                 
-                {/* <div className="pt-6">
-                  <p className={`font-medium text-gray-900 flex items-center`}>
-                    <CreditCard size={16} className={`mr-2 ${themeClasses.primary.text}`} />
-                    Payment Method
-                  </p>
-                  <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md border border-gray-100 flex items-center">
-                    {paymentMethod === 'online' && (
-                      <>
-                        <CreditCard size={16} className="mr-2 text-gray-400" /> Online Payment (PhonePe)
-                      </>
-                    )}
-                    {paymentMethod === 'cash_on_delivery' && (
-                      <>
-                        <DollarSign size={16} className="mr-2 text-gray-400" /> Pay Later
-                      </>
-                    )}
-                  </div>
-                </div> */}
               </div>
             </div>
             

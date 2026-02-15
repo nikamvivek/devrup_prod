@@ -200,12 +200,8 @@ const CouponManagement = () => {
       setError(null);
       
       const response = await adminService.getAllCoupons();
-      console.log('Coupons response data:', response);
-      
       const couponsData = Array.isArray(response) ? response : 
                          (response && response.results ? response.results : []);
-      
-      console.log('Processed coupons data:', couponsData);
       setCoupons(couponsData);
       setLoading(false);
       
@@ -216,7 +212,6 @@ const CouponManagement = () => {
         });
       }
     } catch (err) {
-      console.error('Error fetching coupons:', err);
       
       const errorMessage = err.response?.data?.message || 
                           err.response?.data?.error || 
@@ -241,16 +236,13 @@ const CouponManagement = () => {
       const categoriesData = Array.isArray(categoriesResponse) ? categoriesResponse : 
                            (categoriesResponse?.results || []);
       setCategories(categoriesData);
-      console.log('Categories loaded:', categoriesData);
       
       // Fetch products
       const productsResponse = await productService.getProducts();
       const productsData = Array.isArray(productsResponse) ? productsResponse : 
                          (productsResponse?.results || []);
       setProducts(productsData);
-      console.log('Products loaded:', productsData);
     } catch (error) {
-      console.error('Error fetching categories/products:', error);
       setToast({
         message: 'Failed to load categories and products',
         type: 'error'
@@ -282,20 +274,7 @@ const CouponManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Console log the form data before validation
-    console.log('=== COUPON FORM SUBMISSION ===');
-    console.log('Form Data:', formData);
-    console.log('Selected Categories:', formData.applicable_categories);
-    console.log('Selected Products:', formData.applicable_products);
-    console.log('Category Names:', formData.applicable_categories.map(id => 
-      categories.find(cat => cat.id === id)?.name || `ID: ${id}`
-    ));
-    console.log('Product Names:', formData.applicable_products.map(id => 
-      products.find(prod => prod.id === id)?.name || `ID: ${id}`
-    ));
-    console.log('===========================');
-    
+          
     if (!validateForm()) {
       return;
     }
@@ -316,9 +295,9 @@ const CouponManagement = () => {
         applicable_products: formData.applicable_products
       };
 
-      console.log('=== PROCESSED FORM DATA FOR API ===');
-      console.log('Complete Form Data:', completeFormData);
-      console.log('=================================');
+      
+      
+      
 
       let response;
 
@@ -352,13 +331,13 @@ const CouponManagement = () => {
         });
       }
 
-      console.log('=== API RESPONSE ===');
-      console.log('Response:', response);
-      console.log('==================');
+      
+      
+      
 
       resetForm();
     } catch (err) {
-      console.error('Error saving coupon:', err);
+      
       
       const errorMessage = err.response?.data?.message || 
                           err.response?.data?.error || 
@@ -376,8 +355,8 @@ const CouponManagement = () => {
   };
 
   const validateForm = () => {
-    console.log('=== FORM VALIDATION ===');
-    console.log('Validating form data:', formData);
+    
+    
     
     if (!formData.code.trim()) {
       setToast({
@@ -427,14 +406,14 @@ const CouponManagement = () => {
       return false;
     }
     
-    console.log('Form validation passed');
-    console.log('=====================');
+    
+    
     return true;
   };
 
   const handleEdit = (coupon) => {
-    console.log('=== EDITING COUPON ===');
-    console.log('Coupon to edit:', coupon);
+    
+    
     
     setFormData({
       code: coupon.code,
@@ -452,13 +431,7 @@ const CouponManagement = () => {
     });
     setEditingId(coupon.id);
     setShowForm(true);
-    
-    console.log('Form data set for editing:', {
-      applicable_categories: coupon.applicable_categories || [],
-      applicable_products: coupon.applicable_products || []
-    });
-    console.log('====================');
-    
+
     setToast({
       message: `Editing coupon "${coupon.code}"`,
       type: 'info'
@@ -493,7 +466,7 @@ const CouponManagement = () => {
         type: 'success'
       });
     } catch (err) {
-      console.error('Error deleting coupon:', err);
+      
       
       const errorMessage = err.response?.data?.message || err.message || 'Failed to delete coupon. Please try again.';
       setError(`Failed to delete coupon: ${errorMessage}`);
@@ -522,16 +495,15 @@ const CouponManagement = () => {
     });
     setEditingId(null);
     setShowForm(false);
-    console.log('Form reset');
+    
   };
 
   const toggleCouponStatus = async (id, currentStatus, code) => {
     try {
-      console.log(`Attempting to toggle coupon ${id} from ${currentStatus} to ${!currentStatus}`);
+      
       
       const coupon = coupons.find(c => c.id === id);
       if (!coupon) {
-        console.error('Coupon not found in local state');
         return;
       }
       
@@ -550,11 +522,11 @@ const CouponManagement = () => {
         applicable_products: coupon.applicable_products || []
       };
       
-      console.log('Sending update data:', updateData);
+      
       
       const response = await adminService.updateCoupon(id, updateData);
       
-      console.log('Toggle response:', response);
+      
       
       setCoupons(coupons.map(c => 
         c.id === id ? response : c
@@ -565,11 +537,6 @@ const CouponManagement = () => {
         type: 'success'
       });
     } catch (err) {
-      console.error('Error updating coupon status:', err);
-      if (err.response) {
-        console.error('Response status:', err.response.status);
-        console.error('Response details:', err.response.data);
-      }
       
       const errorMessage = err.response?.data?.message || 
                           err.response?.data?.error || 

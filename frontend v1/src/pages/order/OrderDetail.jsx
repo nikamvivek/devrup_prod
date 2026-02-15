@@ -283,7 +283,7 @@ const OrderDetail = () => {
                   item.product_image = productDetails.images?.[0]?.image || null;
                   item.product_slug = productDetails.slug;
                 } catch (err) {
-                  console.error('Error fetching product details:', err);
+                  
                 }
               }
             }
@@ -296,7 +296,7 @@ const OrderDetail = () => {
 
         setOrder(orderData);
       } catch (err) {
-        console.error('Error fetching order details:', err);
+        
         setError('Failed to load order details. Please try again.');
       } finally {
         setLoading(false);
