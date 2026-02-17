@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AdminLayout from '../../components/layout/AdminLayout';
 import { useAuth } from '../../contexts/AuthContext';
 import productService from '../../services/productService';
+import Pagination from '../../components/common/Pagination';
 import { 
   Plus, 
   Pencil, 
@@ -62,10 +62,7 @@ const DeleteConfirmationModal = ({ isOpen, onClose, onConfirm, productName }) =>
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onClick={onClose}></div>
-        
-        {/* Modal panel */}
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="sm:flex sm:items-start">
@@ -115,68 +112,72 @@ const ProductManagement = () => {
     productSlug: null,
     productName: ''
   });
+
+  // --- Pagination state ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const PAGE_SIZE = 10; // must match your backend page size
+
   const { getToken } = useAuth();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Use the productService instead of direct axios calls
-        const data = await productService.getProducts();
-        
-        // Check if the response contains a results array (paginated response)
-        if (data && data.results) {
-          setProducts(data.results);
-        } else if (Array.isArray(data)) {
-          // If the response is directly an array
-          setProducts(data);
-        } else {
-          // If the response is in an unexpected format
-          setToast({
-            message: 'Received data in an unexpected format.',
-            type: 'error'
-          });
-          setProducts([]);
-        }
-        
-        setLoading(false);
-      } catch (err) {
+  // Extracted fetch function so it can be called on page change too
+  const fetchProducts = async (page = 1) => {
+    try {
+      setLoading(true);
+      const data = await productService.getProducts({ page }); // pass page param
+      console.log(data);
+
+      if (data && data.results) {
+        setProducts(data.results);
+        setTotalCount(data.count);
+        setTotalPages(Math.ceil(data.count / PAGE_SIZE));
+      } else if (Array.isArray(data)) {
+        setProducts(data);
+        setTotalPages(1);
+      } else {
         setToast({
-          message: 'Failed to load products. Please try again.',
+          message: 'Received data in an unexpected format.',
           type: 'error'
         });
-        setLoading(false);
-        setProducts([]); // Ensure products is an array even on error
+        setProducts([]);
       }
-    };
+    } catch (err) {
+      setToast({
+        message: 'Failed to load products. Please try again.',
+        type: 'error'
+      });
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchProducts();
-  }, []);
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const openDeleteModal = (slug, name) => {
-    setDeleteModal({
-      isOpen: true,
-      productSlug: slug,
-      productName: name
-    });
+    setDeleteModal({ isOpen: true, productSlug: slug, productName: name });
   };
 
   const closeDeleteModal = () => {
-    setDeleteModal({
-      isOpen: false,
-      productSlug: null,
-      productName: ''
-    });
+    setDeleteModal({ isOpen: false, productSlug: null, productName: '' });
   };
 
   const handleToggleStatus = async (productSlug) => {
     try {
       setToggleLoading(productSlug);
       const updatedProduct = await productService.toggleProductStatus(productSlug);
-      
       setProducts(products.map(product => 
         product.slug === productSlug ? updatedProduct : product
       ));
-      
       setToast({ 
         message: `Product ${updatedProduct.is_active ? 'activated' : 'deactivated'} successfully`, 
         type: 'success' 
@@ -194,17 +195,17 @@ const ProductManagement = () => {
   const confirmDelete = async () => {
     try {
       await productService.deleteProduct(deleteModal.productSlug);
-      setProducts(products.filter(product => product.slug !== deleteModal.productSlug));
-      setToast({
-        message: 'Product deleted successfully',
-        type: 'success'
-      });
+      // If deleting the last item on a page beyond page 1, go back one page
+      const isLastItemOnPage = products.length === 1 && currentPage > 1;
       closeDeleteModal();
+      if (isLastItemOnPage) {
+        setCurrentPage(prev => prev - 1); // triggers useEffect refetch
+      } else {
+        fetchProducts(currentPage); // refresh current page
+      }
+      setToast({ message: 'Product deleted successfully', type: 'success' });
     } catch (err) {
-      setToast({
-        message: 'Failed to delete product. Please try again.',
-        type: 'error'
-      });
+      setToast({ message: 'Failed to delete product. Please try again.', type: 'error' });
       closeDeleteModal();
     }
   };
@@ -232,7 +233,12 @@ const ProductManagement = () => {
             <Package className="mr-3 h-8 w-8 text-blue-500" />
             Product Management
           </h1>
-          <p className="text-gray-600 ml-11">Manage your product inventory</p>
+          <p className="text-gray-600 ml-11">
+            Manage your product inventory
+            {totalCount > 0 && (
+              <span className="ml-2 text-sm text-gray-400">({totalCount} total)</span>
+            )}
+          </p>
         </div>
         <Link 
           to="/admin/products/create" 
@@ -264,104 +270,113 @@ const ProductManagement = () => {
               </Link>
             </div>
           ) : (
-            <ul className="divide-y divide-gray-200">
-              {products.map(product => (
-                <li key={product.id} className="hover:bg-gray-50 transition-colors duration-150">
-                  <div className="px-6 py-5 flex items-center justify-between">
-                    <div className="flex items-center">
-                      {product.main_image ? (
-                        <img 
-                          src={product.main_image} 
-                          alt={product.name} 
-                          className="h-20 w-20 object-cover rounded-lg shadow-sm border border-gray-200"
-                        />
-                      ) : (
-                        <div className="h-20 w-20 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-200">
-                          <Package className="h-8 w-8 text-gray-400" />
+            <>
+              <ul className="divide-y divide-gray-200">
+                {products.map(product => (
+                  <li key={product.id} className="hover:bg-gray-50 transition-colors duration-150">
+                    <div className="px-6 py-5 flex items-center justify-between">
+                      <div className="flex items-center">
+                        {product.main_image ? (
+                          <img 
+                            src={product.main_image} 
+                            alt={product.name} 
+                            className="h-20 w-20 object-cover rounded-lg shadow-sm border border-gray-200"
+                          />
+                        ) : (
+                          <div className="h-20 w-20 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-200">
+                            <Package className="h-8 w-8 text-gray-400" />
+                          </div>
+                        )}
+                        <div className="ml-5">
+                          <p className="text-lg font-medium text-blue-600 truncate mb-1">{product.name}</p>
+                          <div className="flex items-center text-sm text-gray-500">
+                            <Tag className="h-3.5 w-3.5 mr-1" />
+                            <span>Category: {product.category_name}</span>
+                            <span className="mx-2">•</span>
+                            <span>Brand: {product.brand_name || 'N/A'}</span>
+                          </div>
+                          <div className="mt-2 flex items-center">
+                            <span className="text-sm text-gray-600 mr-2 font-medium">
+                              {product.discount_price ? (
+                                <>
+                                  <span className="line-through text-gray-400">${product.price}</span>
+                                  <span className="ml-1 text-red-600">${product.discount_price}</span>
+                                </>
+                              ) : (
+                                <span>${product.price}</span>
+                              )}
+                            </span>
+                            <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
+                              {product.variants_count} variant{product.variants_count !== 1 ? 's' : ''}
+                            </span>
+                            <div className="px-2">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                product.is_active 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {product.is_active ? 'Active' : 'Inactive'}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                      <div className="ml-5">
-                        <p className="text-lg font-medium text-blue-600 truncate mb-1">{product.name}</p>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Tag className="h-3.5 w-3.5 mr-1" />
-                          <span>Category: {product.category_name}</span>
-                          <span className="mx-2">•</span>
-                          <span>Brand: {product.brand_name || 'N/A'}</span>
-                        </div>
-                        <div className="mt-2 flex items-center">
-                          <span className="text-sm text-gray-600 mr-2 font-medium">
-                            {product.discount_price ? (
-                              <>
-                                <span className="line-through text-gray-400">${product.price}</span>
-                                <span className="ml-1 text-red-600">${product.discount_price}</span>
-                              </>
-                            ) : (
-                              <span>${product.price}</span>
-                            )}
-                          </span>
-                          <span className="text-xs px-2 py-0.5 bg-blue-100 text-blue-800 rounded-full">
-                            {product.variants_count} variant{product.variants_count !== 1 ? 's' : ''}
-                          </span>
-                           <div className="px-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            product.is_active 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {product.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </div>
-                        </div>                       
-                     
+                      </div>
+                      <div className="flex space-x-2">
+                        <Link 
+                          to={`/admin/products/edit/${product.slug}`}
+                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 bg-white rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
+                        >
+                          <Pencil className="w-4 h-4 mr-1 text-blue-600" /> 
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => handleToggleStatus(product.slug)}
+                          disabled={toggleLoading === product.slug}
+                          className={`inline-flex items-center px-3 py-1.5 border rounded-md text-sm font-medium transition-colors duration-150 ${
+                            product.is_active
+                              ? 'border-yellow-200 bg-white text-yellow-600 hover:bg-yellow-50'
+                              : 'border-green-200 bg-white text-green-600 hover:bg-green-50'
+                          } focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          {toggleLoading === product.slug ? (
+                            <Loader className="h-4 w-4 mr-1 animate-spin" />
+                          ) : product.is_active ? (
+                            <ToggleRight className="h-4 w-4 mr-1" />
+                          ) : (
+                            <ToggleLeft className="h-4 w-4 mr-1" />
+                          )}
+                          {product.is_active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button 
+                          onClick={() => openDeleteModal(product.slug, product.name)}
+                          className="inline-flex items-center px-3 py-1.5 border border-red-200 bg-white rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" /> 
+                          Delete
+                        </button>
+                        <Link 
+                          to={`/products/${product.slug}`}
+                          className="inline-flex items-center px-3 py-1.5 border border-green-200 bg-white rounded-md text-sm font-medium text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-150"
+                          target="_blank"
+                        >
+                          <Eye className="w-4 h-4 mr-1" /> 
+                          View
+                        </Link>
                       </div>
                     </div>
-                    <div className="flex space-x-2">
-                       <Link 
-                        to={`/admin/products/edit/${product.slug}`}
-                        className="inline-flex items-center px-3 py-1.5 border border-gray-300 bg-white rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
-                      >
-                        <Pencil className="w-4 h-4 mr-1 text-blue-600" /> 
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleToggleStatus(product.slug)}
-                        disabled={toggleLoading === product.slug}
-                        className={`inline-flex items-center px-3 py-1.5 border rounded-md text-sm font-medium transition-colors duration-150 ${
-                          product.is_active
-                            ? 'border-yellow-200 bg-white text-yellow-600 hover:bg-yellow-50'
-                            : 'border-green-200 bg-white text-green-600 hover:bg-green-50'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed`}
-                      >
-                        {toggleLoading === product.slug ? (
-                          <Loader className="h-4 w-4 mr-1 animate-spin" />
-                        ) : product.is_active ? (
-                          <ToggleRight className="h-4 w-4 mr-1" />
-                        ) : (
-                          <ToggleLeft className="h-4 w-4 mr-1" />
-                        )}
-                        {product.is_active ? 'Deactivate' : 'Activate'}
-                      </button>
-                     
-                      <button 
-                        onClick={() => openDeleteModal(product.slug, product.name)}
-                        className="inline-flex items-center px-3 py-1.5 border border-red-200 bg-white rounded-md text-sm font-medium text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" /> 
-                        Delete
-                      </button>
-                      <Link 
-                        to={`/products/${product.slug}`}
-                        className="inline-flex items-center px-3 py-1.5 border border-green-200 bg-white rounded-md text-sm font-medium text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-150"
-                        target="_blank"
-                      >
-                        <Eye className="w-4 h-4 mr-1" /> 
-                        View
-                      </Link>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Pagination — only renders when there's more than one page */}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
           )}
         </div>
       )}

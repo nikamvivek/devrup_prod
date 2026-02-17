@@ -16,8 +16,8 @@ import {
   Shield,
   Truck,
   ArrowRight,
+  RefreshCw 
 } from "lucide-react";
-import { FaArrowsRotate } from "react-icons/fa6";
 import productService from "../../services/productService";
 import { useAuth } from "../../contexts/AuthContext";
 import siteConfig from "../../config/siteConfig";
@@ -360,7 +360,7 @@ const Footer = () => {
                 to={siteConfig.legalLinks.return}
                 className="text-xs md:text-sm text-gray-400 hover:text-white transition-colors duration-200 flex items-center"
               >
-                <FaArrowsRotate size={14} className="mr-1" />
+                <RefreshCw  size={14} className="mr-1" />
                 Return & Refund Policy
               </Link>
 

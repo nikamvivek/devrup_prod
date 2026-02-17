@@ -34,6 +34,7 @@ const Home = () => {
       try {
         setLoading(true);
         const data = await homeService.getHomePageData();
+        console.log(data)
         setHomeData(data);
       } catch (error) {
         
